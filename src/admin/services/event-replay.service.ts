@@ -242,7 +242,6 @@ export class EventReplayService {
     const canApply =
       !dryRun &&
       Boolean(options.confirm) &&
-      Boolean(options.reason) &&
       hasWritableReducer &&
       !recordMissing &&
       Object.keys(replayedState).length > 0 &&
