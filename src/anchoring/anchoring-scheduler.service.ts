@@ -28,7 +28,7 @@ export class AnchoringSchedulerService {
     const now = Date.now();
     const elapsedMinutes = (now - this.lastAnchorTime) / (1000 * 60);
 
-    if (elapsedMinutes < this.config.minIntervalMinutes) {
+    if (elapsedMinutes < this.config.minIntervalMinutes && this.pendingEventsCount < this.config.maxBatchSize && this.pendingEventsCount < this.config.batchSizeThreshold) {
       return false;
     }
 
