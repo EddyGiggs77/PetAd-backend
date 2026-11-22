@@ -239,10 +239,6 @@ export class EventReplayService {
     //    `appliedToDb: true` when nothing was actually written.
     const recordMissing = Object.keys(currentState).length === 0;
     const hasWritableReducer = !READ_ONLY_AGGREGATES.has(aggregateType);
-    if (!dryRun && (!options.confirm || !options.reason)) {
-      throw new Error('Applying a replay requires confirm=true and a reason.');
-    }
-
     const canApply =
       !dryRun &&
       Boolean(options.confirm) &&
