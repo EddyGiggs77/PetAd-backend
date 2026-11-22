@@ -24,6 +24,7 @@ import {
   type CurrentUserPayload,
 } from '../auth/decorators/current-user.decorator';
 import { EventReplayService } from './services/event-replay.service';
+import { AnchoringRecoveryService } from '../anchoring/anchoring-recovery.service';
 import { ReplayEventsDto } from './dto/replay-events.dto';
 import { EventReplayResponseDto } from './dto/event-replay-response.dto';
 
@@ -33,7 +34,10 @@ import { EventReplayResponseDto } from './dto/event-replay-response.dto';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(Role.ADMIN)
 export class AdminController {
-  constructor(private readonly eventReplayService: EventReplayService) {}
+  constructor(
+    private readonly eventReplayService: EventReplayService,
+    private readonly anchoringRecoveryService: AnchoringRecoveryService,
+  ) {}
 
   /**
    * POST /admin/replay/:aggregateId
@@ -106,5 +110,15 @@ export class AdminController {
       upToSequence: dto.upToSequence,
       actorId,
     });
+  }
+
+  @Post('anchoring/batches/:id/retry')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Retry a failed anchoring batch (admin only)',
+    description: 'Creates a new anchoring batch referencing the failed one with preserved lineage.',
+  })
+  async retryAnchoringBatch(@Param('id') id: string): Promise<any> {
+    return this.anchoringRecoveryService.retryBatch(id);
   }
 }
